@@ -1,22 +1,25 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  name: {
-
-    type: String,
-    required: true,
-    maxlength: 30,
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      maxlength: 30,
+    },
+    about: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 30,
+    },
+    avatar: {
+      type: String,
+      required: true,
+      match: /^https?:\/\/(www\.)?\w+\.\w{2,}\/?.*$/i,
+    },
   },
-  about: {
-    type: String,
-    required: true,
-    minlength: 2,
-    maxlength: 30,
-  },
-  avatar: {
-    type: String,
-    required: true,
-  },
-}, { validateBeforeSave: true });
+  { validateBeforeSave: true }
+);
 
 module.exports = mongoose.model("user", userSchema);

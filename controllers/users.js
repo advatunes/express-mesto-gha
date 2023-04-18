@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const User = require("../models/user");
 
 module.exports.createUser = (req, res) => {
@@ -29,14 +30,29 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+    res.status(404).send({ message: "Пользователь не найден" });
+  } else
+    User.findById(req.params.userId)
+      .then((user) => {
+        res.send({ data: user });
+      })
+      .catch((err) => {
+        res.status(500).send({ message: "Произошла ошибка" });
+      });
+};
 
-  User.findById(req.params.userId)
-    .then((user) => {
-      if (!user) {
-        return res.status(404).send({ message: "Пользователь не найден" });
-      }
-      res.send({ data: user });
-    })
+module.exports.updateProfile = (req, res) => {
+  const { name, about } = req.body;
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, about },
+    {
+      new: true,
+      runValidators: true,
+    }
+  )
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res
@@ -47,12 +63,11 @@ module.exports.getUserById = (req, res) => {
     });
 };
 
-module.exports.updateProfile = (req, res) => {
-
-  const { name, about } = req.body;
+module.exports.updateAvatar = (req, res) => {
+  const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
-    { name, about },
+    { avatar },
     {
       new: true,
       runValidators: true,

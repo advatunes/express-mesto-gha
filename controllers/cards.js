@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Card = require("../models/card");
 
 module.exports.createCard = (req, res) => {
@@ -29,33 +30,42 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.deleteCardUserById = (req, res) => {
-  Card.findById(req.params.cardId)
-    .then((card) => {
-      if (!card) {
-        return res.status(404).send({ message: "Карточка не найдена" });
-      }
-      if (card.owner.toString() !== req.user._id) {
-        return res
-          .status(403)
-          .send({ message: "Вы не можете удалить чужую карточку" });
-      }
-      Card.findByIdAndRemove(req.params.cardId)
-        .then(() => res.send({ message: "Карточка удалена" }))
-        .catch((err) => {
-          if (err.name === "ValidationError") {
-            return res
-              .status(400)
-              .send({ message: `Ошибка валидации: ${err.message}` });
-          }
-          return res.status(500).send({ message: "Произошла ошибка" });
-        });
-    })
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send({ message: `Ошибка валидации: ${err.message}` });
-      }
-      return res.status(500).send({ message: "Произошла ошибка" });
-    });
+  if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
+    res.send({ message: "Карточка с указанным _id не найдена." });
+  } else
+    Card.findByIdAndRemove(req.params.cardId)
+      .then(() => res.send({ message: "Карточка удалена" }))
+      .catch((err) => {
+        res.status(500).send({ message: "Произошла ошибка" });
+      });
+};
+
+module.exports.likeCard = (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
+    res.send({ message: "Передан несуществующий _id карточки" });
+  } else
+    Card.findByIdAndUpdate(
+      req.params.cardId,
+      { $addToSet: { likes: req.user._id } },
+      { new: true }
+    )
+      .then((card) => res.send({ data: card }))
+      .catch((err) => {
+        res.status(500).send({ message: "Произошла ошибка" });
+      });
+};
+
+module.exports.dislikeCard = (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
+    res.send({ message: "Передан несуществующий _id карточки" });
+  } else
+    Card.findByIdAndUpdate(
+      req.params.cardId,
+      { $pull: { likes: req.user._id } },
+      { new: true }
+    )
+      .then((card) => res.send({ data: card }))
+      .catch((err) => {
+        res.status(500).send({ message: "Произошла ошибка" });
+      });
 };
