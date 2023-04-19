@@ -42,7 +42,7 @@ module.exports.deleteCardUserById = (req, res) => {
 
 module.exports.likeCard = (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
-    res.send({ message: "Передан несуществующий _id карточки" });
+    res.status(404).send({ message: "Передан несуществующий _id карточки" });
   } else
     Card.findByIdAndUpdate(
       req.params.cardId,
@@ -57,7 +57,7 @@ module.exports.likeCard = (req, res) => {
 
 module.exports.dislikeCard = (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
-    res.send({ message: "Передан несуществующий _id карточки" });
+    res.status(404).send({ message: "Передан несуществующий _id карточки" });
   } else
     Card.findByIdAndUpdate(
       req.params.cardId,
