@@ -8,11 +8,9 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send({ message: `Ошибка валидации: ${err.message}` });
+        res.status(400).send({ message: `Ошибка валидации: ${err.message}` });
       }
-      return res.status(500).send({ message: "Произошла ошибка" });
+      res.status(500).send({ message: "Произошла ошибка" });
     });
 };
 
@@ -21,26 +19,27 @@ module.exports.getUsers = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send({ message: `Ошибка валидации: ${err.message}` });
+        res.status(400).send({ message: `Ошибка валидации: ${err.message}` });
       }
-      return res.status(500).send({ message: "Произошла ошибка" });
+      res.status(500).send({ message: "Произошла ошибка" });
     });
 };
 
 module.exports.getUserById = (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
-    res.status(404).send({ message: "Пользователь не найден" });
-  } else {
-    User.findById(req.params.userId)
-      .then((user) => {
-        res.send({ data: user });
-      })
-      .catch(() => {
-        res.status(500).send({ message: "Произошла ошибка" });
-      });
+    res.status(400).send({ message: "Некорректный ID пользователя" });
   }
+
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: "Пользователь не найден" });
+      }
+      res.send({ data: user });
+    })
+    .catch(() => {
+      res.status(500).send({ message: "Произошла ошибка" });
+    });
 };
 
 module.exports.updateProfile = (req, res) => {
@@ -51,16 +50,14 @@ module.exports.updateProfile = (req, res) => {
     {
       new: true,
       runValidators: true,
-    },
+    }
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send({ message: `Ошибка валидации: ${err.message}` });
+        res.status(400).send({ message: `Ошибка валидации: ${err.message}` });
       }
-      return res.status(500).send({ message: "Произошла ошибка" });
+      res.status(500).send({ message: "Произошла ошибка" });
     });
 };
 
@@ -72,15 +69,13 @@ module.exports.updateAvatar = (req, res) => {
     {
       new: true,
       runValidators: true,
-    },
+    }
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res
-          .status(400)
-          .send({ message: `Ошибка валидации: ${err.message}` });
+        res.status(400).send({ message: `Ошибка валидации: ${err.message}` });
       }
-      return res.status(500).send({ message: "Произошла ошибка" });
+      res.status(500).send({ message: "Произошла ошибка" });
     });
 };
