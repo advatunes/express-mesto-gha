@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
       match: /^https?:\/\/(www\.)?\w+\.\w{2,}\/?.*$/i,
     },
   },
-  { validateBeforeSave: true }
+  { validateBeforeSave: true },
 );
 
 module.exports = mongoose.model("user", userSchema);

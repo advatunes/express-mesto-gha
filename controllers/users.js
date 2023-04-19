@@ -32,14 +32,15 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
     res.status(404).send({ message: "Пользователь не найден" });
-  } else
+  } else {
     User.findById(req.params.userId)
       .then((user) => {
         res.send({ data: user });
       })
-      .catch((err) => {
+      .catch(() => {
         res.status(500).send({ message: "Произошла ошибка" });
       });
+  }
 };
 
 module.exports.updateProfile = (req, res) => {
@@ -50,7 +51,7 @@ module.exports.updateProfile = (req, res) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
@@ -71,7 +72,7 @@ module.exports.updateAvatar = (req, res) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {

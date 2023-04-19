@@ -28,7 +28,7 @@ const cardSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { validateBeforeSave: true }
+  { validateBeforeSave: true },
 );
 
 module.exports = mongoose.model("card", cardSchema);
