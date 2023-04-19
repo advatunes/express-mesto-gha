@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 const Card = require("../models/card");
 
 module.exports.createCard = (req, res) => {
-  const { name, link, likes, createdAt } = req.body;
+  const {
+    name, link, likes, createdAt,
+  } = req.body;
   const owner = req.user._id;
   Card.create({
     name,
@@ -55,7 +57,7 @@ module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
     .then((card) => {
       if (!card) {
@@ -75,7 +77,7 @@ module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
     .then((card) => {
       if (!card) {
