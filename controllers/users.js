@@ -26,7 +26,6 @@ module.exports.createUser = (req, res) => {
 };
 
 module.exports.getUsers = (req, res) => {
-
   User.find({})
     .then((user) => res.send({ data: user }))
     .catch(() => {
@@ -37,7 +36,6 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  console.log(req);
   if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
     return res
       .status(STATUS_BAD_REQUEST)

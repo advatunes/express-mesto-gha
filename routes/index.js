@@ -1,7 +1,7 @@
-// const { userRouter } = require("./users");
-// const { cardRouter } = require("./cards");
+const { userRouter } = require("./users");
+const { cardRouter } = require("./cards");
 
-// module.exports = {
-//   userRouter,
-//   cardRouter,
-// };
+module.exports = {
+  userRouter,
+  cardRouter,
+};
