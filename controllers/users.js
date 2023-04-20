@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const User = require("../models/user");
 const {
+  STATUS_CREATED,
   STATUS_BAD_REQUEST,
   STATUS_NOT_FOUND,
   STATUS_INTERNAL_SERVER_ERROR,
@@ -10,7 +11,7 @@ module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.status(201).send({ data: user }))
+    .then((user) => res.status(STATUS_CREATED).send({ data: user }))
     .catch((err) => {
       if (err.name === "ValidationError") {
         res

@@ -8,6 +8,7 @@ const {
 
 module.exports.createCard = (req, res) => {
   const { name, link, likes } = req.body;
+
   const owner = req.user._id;
   Card.create({
     name,
