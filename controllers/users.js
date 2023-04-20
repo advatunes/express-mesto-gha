@@ -13,7 +13,7 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.status(STATUS_CREATED).send({ data: user }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err instanceof mongoose.Error.ValidationError) {
         res
           .status(STATUS_BAD_REQUEST)
           .send({ message: `Ошибка валидации: ${err.message}` });
@@ -26,6 +26,7 @@ module.exports.createUser = (req, res) => {
 };
 
 module.exports.getUsers = (req, res) => {
+
   User.find({})
     .then((user) => res.send({ data: user }))
     .catch(() => {
@@ -36,6 +37,7 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
+  console.log(req);
   if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
     return res
       .status(STATUS_BAD_REQUEST)
@@ -68,7 +70,7 @@ module.exports.updateProfile = (req, res) => {
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err instanceof mongoose.Error.ValidationError) {
         res
           .status(STATUS_BAD_REQUEST)
           .send({ message: `Ошибка валидации: ${err.message}` });
@@ -92,7 +94,7 @@ module.exports.updateAvatar = (req, res) => {
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err instanceof mongoose.Error.ValidationError) {
         res
           .status(STATUS_BAD_REQUEST)
           .send({ message: `Ошибка валидации: ${err.message}` });

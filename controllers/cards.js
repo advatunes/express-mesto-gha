@@ -18,7 +18,7 @@ module.exports.createCard = (req, res) => {
   })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err instanceof mongoose.Error.ValidationError) {
         res
           .status(STATUS_BAD_REQUEST)
           .send({ message: `Ошибка валидации: ${err.message}` });
