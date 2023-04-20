@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 const User = require("../models/user");
+const {
+  STATUS_BAD_REQUEST,
+  STATUS_NOT_FOUND,
+  STATUS_INTERNAL_SERVER_ERROR,
+} = require("../utils/errors");
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
@@ -8,9 +13,13 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({ message: `Ошибка валидации: ${err.message}` });
+        res
+          .status(STATUS_BAD_REQUEST)
+          .send({ message: `Ошибка валидации: ${err.message}` });
       } else {
-        res.status(500).send({ message: "Произошла ошибка" });
+        res
+          .status(STATUS_INTERNAL_SERVER_ERROR)
+          .send({ message: "Произошла ошибка" });
       }
     });
 };
@@ -19,23 +28,31 @@ module.exports.getUsers = (req, res) => {
   User.find({})
     .then((user) => res.send({ data: user }))
     .catch(() => {
-      res.status(500).send({ message: "Произошла ошибка" });
+      res
+        .status(STATUS_INTERNAL_SERVER_ERROR)
+        .send({ message: "Произошла ошибка" });
     });
 };
 
 module.exports.getUserById = (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
-    return res.status(400).send({ message: "Некорректный ID пользователя" });
+    return res
+      .status(STATUS_BAD_REQUEST)
+      .send({ message: "Некорректный ID пользователя" });
   }
 
   return User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: "Пользователь не найден" });
+        return res
+          .status(STATUS_NOT_FOUND)
+          .send({ message: "Пользователь не найден" });
       }
       return res.send({ data: user });
     })
-    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+    .catch(() => res
+      .status(STATUS_INTERNAL_SERVER_ERROR)
+      .send({ message: "Произошла ошибка" }));
 };
 
 module.exports.updateProfile = (req, res) => {
@@ -51,8 +68,14 @@ module.exports.updateProfile = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({ message: `Ошибка валидации: ${err.message}` });
-      } else res.status(500).send({ message: "Произошла ошибка" });
+        res
+          .status(STATUS_BAD_REQUEST)
+          .send({ message: `Ошибка валидации: ${err.message}` });
+      } else {
+        res
+          .status(STATUS_INTERNAL_SERVER_ERROR)
+          .send({ message: "Произошла ошибка" });
+      }
     });
 };
 
@@ -69,7 +92,13 @@ module.exports.updateAvatar = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({ message: `Ошибка валидации: ${err.message}` });
-      } else res.status(500).send({ message: "Произошла ошибка" });
+        res
+          .status(STATUS_BAD_REQUEST)
+          .send({ message: `Ошибка валидации: ${err.message}` });
+      } else {
+        res
+          .status(STATUS_INTERNAL_SERVER_ERROR)
+          .send({ message: "Произошла ошибка" });
+      }
     });
 };
