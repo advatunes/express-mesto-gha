@@ -3,7 +3,7 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: ["eslint:recommended", "plugin:react/recommended", "airbnb-base"],
+  extends: ["eslint:recommended", "airbnb-base"],
   overrides: [],
   parserOptions: {
     ecmaVersion: "latest",
