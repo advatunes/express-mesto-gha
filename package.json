@@ -6,21 +6,20 @@
   "scripts": {
     "dev": "nodemon app.js",
     "start": "node app.js",
-    "lint": "eslint ."
+    "lint": "npx eslint ."
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/advatunes/express-mesto-gha.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "dmitriy nikonov",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/advatunes/express-mesto-gha/issues"
   },
   "homepage": "https://github.com/advatunes/express-mesto-gha#readme",
   "dependencies": {
-    "body-parser": "^1.20.2",
     "eslint-plugin-import": "^2.27.5",
     "express": "^4.18.2",
     "mongoose": "^7.0.3"

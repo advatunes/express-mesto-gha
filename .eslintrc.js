@@ -9,11 +9,10 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["react"],
   rules: {
     semi: ["error", "always"],
     quotes: ["error", "double"],
-    "no-underscore-dangle": "off",
+    "no-underscore-dangle": ["error", { allow: ["_id", "foo_"] }],
   },
   settings: {
     react: {
@@ -21,8 +20,4 @@ module.exports = {
     },
   },
   ignorePatterns: ["node_modules/"],
-  globals: {
-    foo_: true,
-    _bar: true,
-  },
 };

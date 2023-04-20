@@ -15,17 +15,16 @@ const cardSchema = new mongoose.Schema(
     owner: {
       type: mongoose.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: "user",
     },
     likes: {
       type: [mongoose.Schema.Types.ObjectId],
       default: [],
-      ref: "User",
+      ref: "user",
     },
     createdAt: {
       type: Date,
       default: Date.now,
-      required: true,
     },
   },
   { validateBeforeSave: true },
