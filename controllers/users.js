@@ -1,7 +1,9 @@
-const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const validator = require("validator");
-const bcrypt = require('bcryptjs');
+const mongoose = require("mongoose");
 const User = require("../models/user");
+
 const {
   STATUS_CREATED,
   STATUS_BAD_REQUEST,
@@ -10,7 +12,9 @@ const {
 } = require("../utils/errors");
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
   if (!validator.isEmail(email)) {
     return res
       .status(STATUS_BAD_REQUEST)
@@ -18,7 +22,9 @@ module.exports.createUser = (req, res) => {
   }
 
   bcrypt.hash(password, 10).then((hash) => {
-    User.create({ name, about, avatar, email, password: hash })
+    User.create({
+      name, about, avatar, email, password: hash,
+    })
       .then((user) => res.status(STATUS_CREATED).send({ user }))
       .catch((err) => {
         if (err instanceof mongoose.Error.ValidationError) {
@@ -33,12 +39,6 @@ module.exports.createUser = (req, res) => {
       });
   });
 };
-
-
-
-
-
-
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -66,11 +66,9 @@ module.exports.getUserById = (req, res) => {
       }
       return res.send({ data: user });
     })
-    .catch(() =>
-      res
-        .status(STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: "Произошла ошибка" })
-    );
+    .catch(() => res
+      .status(STATUS_INTERNAL_SERVER_ERROR)
+      .send({ message: "Произошла ошибка" }));
 };
 
 module.exports.updateProfile = (req, res) => {
@@ -81,7 +79,7 @@ module.exports.updateProfile = (req, res) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
@@ -105,7 +103,7 @@ module.exports.updateAvatar = (req, res) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
