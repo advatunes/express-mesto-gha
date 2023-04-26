@@ -41,7 +41,19 @@ module.exports.createUser = (req, res) => {
 };
 
 module.exports.getUsers = (req, res) => {
+  console.log(req);
   User.find({})
+    .then((user) => res.send({ data: user }))
+    .catch(() => {
+      res
+        .status(STATUS_INTERNAL_SERVER_ERROR)
+        .send({ message: "Произошла ошибка" });
+    });
+};
+
+module.exports.getUserInfo = (req, res) => {
+
+  User.findById(req.user._id)
     .then((user) => res.send({ data: user }))
     .catch(() => {
       res
