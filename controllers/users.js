@@ -12,9 +12,11 @@ const {
 } = require("../utils/errors");
 
 module.exports.createUser = (req, res) => {
+
   const {
     name, about, avatar, email, password,
   } = req.body;
+
   if (!validator.isEmail(email)) {
     return res
       .status(STATUS_BAD_REQUEST)
@@ -41,7 +43,7 @@ module.exports.createUser = (req, res) => {
 };
 
 module.exports.getUsers = (req, res) => {
-  console.log(req);
+
   User.find({})
     .then((user) => res.send({ data: user }))
     .catch(() => {

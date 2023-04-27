@@ -16,6 +16,7 @@ module.exports.createCard = (req, res) => {
     owner,
     likes,
   })
+
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
@@ -49,10 +50,15 @@ module.exports.deleteCardUserById = (req, res) => {
   } else {
     Card.findByIdAndRemove(req.params.cardId)
       .then((card) => {
-        if (!card) {
+        if (card.owner._id !== req.user._id) {
+          res
+            .status(STATUS_FORBIDDEN)
+            .send({ message: "Нельзя удалить чужую карточку" });
+        } else if (!card) {
           res.status(STATUS_NOT_FOUND).send({ message: "Карточка не найдена" });
+        } else {
+          res.send({ message: "Карточка удалена" });
         }
-        res.send({ message: "Карточка удалена" });
       })
       .catch(() => {
         res
@@ -71,7 +77,7 @@ module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true },
+    { new: true }
   )
     .then((card) => {
       if (!card) {
@@ -95,7 +101,7 @@ module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true },
+    { new: true }
   )
     .then((card) => {
       if (!card) {
