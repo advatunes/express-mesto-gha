@@ -7,5 +7,5 @@ module.exports = {
   userRouter,
   cardRouter,
   loginRouter,
-  createUserRouter
+  createUserRouter,
 };

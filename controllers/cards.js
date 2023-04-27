@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 const Card = require("../models/card");
-const {
-  STATUS_BAD_REQUEST,
-  STATUS_NOT_FOUND,
-  STATUS_INTERNAL_SERVER_ERROR,
-} = require("../utils/errors");
+const STATUS_NOT_FOUND = require("../utils/errors");
+const STATUS_BAD_REQUEST = require("../utils/errors");
+const STATUS_CREATED = require("../utils/errors");
+const STATUS_INTERNAL_SERVER_ERROR = require("../utils/errors");
+const STATUS_INVALID_CREDENTIALS = require("../utils/errors");
+const STATUS_DUPLICATE_EMAIL = require("../utils/errors");
+const STATUS_UNAUTHORIZED_ACTION = require("../utils/errors");
 
 module.exports.createCard = (req, res) => {
   const { name, link, likes } = req.body;
@@ -20,14 +22,10 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        res
-          .status(STATUS_BAD_REQUEST)
-          .send({ message: `Ошибка валидации: ${err.message}` });
+        throw new STATUS_BAD_REQUEST(`Ошибка валидации: ${err.message}`);
       }
-      res
-        .status(STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: "Произошла ошибка" });
-    });
+    })
+    .catch(next);
 };
 
 module.exports.getCards = (req, res) => {
@@ -35,83 +33,59 @@ module.exports.getCards = (req, res) => {
     .populate("owner")
     .populate("likes")
     .then((card) => res.send({ data: card }))
-    .catch(() => {
-      res
-        .status(STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: "Произошла ошибка" });
-    });
+    .catch(next);
 };
 
 module.exports.deleteCardUserById = (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
-    res
-      .status(STATUS_BAD_REQUEST)
-      .send({ message: "Некорректный ID карточки" });
+    throw new STATUS_BAD_REQUEST("Некорректный ID карточки");
   } else {
     Card.findByIdAndRemove(req.params.cardId)
       .then((card) => {
-        if (card.owner._id !== req.user._id) {
-          res
-            .status(STATUS_FORBIDDEN)
-            .send({ message: "Нельзя удалить чужую карточку" });
+        if (card.owner.toString() !== req.user._id) {
+          throw new STATUS_UNAUTHORIZED_ACTION("Нельзя удалить чужую карточку");
         } else if (!card) {
-          res.status(STATUS_NOT_FOUND).send({ message: "Карточка не найдена" });
+          throw new STATUS_NOT_FOUND("Карточка не найдена");
         } else {
           res.send({ message: "Карточка удалена" });
         }
       })
-      .catch(() => {
-        res
-          .status(STATUS_INTERNAL_SERVER_ERROR)
-          .send({ message: "Произошла ошибка" });
-      });
+      .catch(next);
   }
 };
 
 module.exports.likeCard = (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
-    res
-      .status(STATUS_BAD_REQUEST)
-      .send({ message: "Некорректный ID карточки" });
+    throw new STATUS_BAD_REQUEST("Некорректный ID карточки");
   }
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
     .then((card) => {
       if (!card) {
-        res.status(STATUS_NOT_FOUND).send({ message: "Карточка не найдена" });
+        throw new STATUS_NOT_FOUND("Карточка не найдена");
       }
       res.send({ data: card });
     })
-    .catch(() => {
-      res
-        .status(STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: "Произошла ошибка" });
-    });
+    .catch(next);
 };
 
 module.exports.dislikeCard = (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
-    res
-      .status(STATUS_BAD_REQUEST)
-      .send({ message: "Некорректный ID карточки" });
+    throw new STATUS_BAD_REQUEST("Некорректный ID карточки");
   }
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
     .then((card) => {
       if (!card) {
-        res.status(STATUS_NOT_FOUND).send({ message: "Карточка не найдена" });
+        throw new STATUS_NOT_FOUND("Карточка не найдена");
       }
       res.send({ data: card });
     })
-    .catch(() => {
-      res
-        .status(STATUS_INTERNAL_SERVER_ERROR)
-        .send({ message: "Произошла ошибка" });
-    });
+    .catch(next);
 };
