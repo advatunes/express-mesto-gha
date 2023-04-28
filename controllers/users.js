@@ -1,5 +1,4 @@
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const mongoose = require("mongoose");
 const User = require("../models/user");
@@ -8,24 +7,24 @@ const {
   STATUS_NOT_FOUND,
   STATUS_BAD_REQUEST,
   STATUS_INTERNAL_SERVER_ERROR,
-  STATUS_INVALID_CREDENTIALS,
   STATUS_DUPLICATE_EMAIL,
-  STATUS_UNAUTHORIZED_ACTION,
 } = require("../utils/errors");
 
 module.exports.createUser = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
   if (!validator.isEmail(email)) {
     throw new STATUS_BAD_REQUEST("Некорректный адрес электронной почты");
   }
 
-  User.findOne({ email: email })
+  User.findOne({ email })
     .select("-password")
     .then((user) => {
       if (user) {
         throw new STATUS_DUPLICATE_EMAIL(
-          "Пользователь с таким email уже существует"
+          "Пользователь с таким email уже существует",
         );
       }
       bcrypt.hash(password, 10).then((hash) => {
@@ -36,11 +35,11 @@ module.exports.createUser = (req, res, next) => {
           email,
           password: hash,
         })
-        .then((user) => {
-          const userWithoutPassword = user.toObject();
-          delete userWithoutPassword.password;
-          res.status(201).send({ user: userWithoutPassword });
-        })
+          .then(() => {
+            const userWithoutPassword = user.toObject();
+            delete userWithoutPassword.password;
+            res.status(201).send({ user: userWithoutPassword });
+          })
 
           .catch((err) => {
             console.log(err);
@@ -48,7 +47,7 @@ module.exports.createUser = (req, res, next) => {
               next(new STATUS_BAD_REQUEST(`Ошибка валидации: ${err.message}`));
             } else if (err.code === 11000) {
               throw new STATUS_DUPLICATE_EMAIL(
-                "Такой пользователь уже существует"
+                "Такой пользователь уже существует",
               );
             } else {
               next(new STATUS_INTERNAL_SERVER_ERROR("Произошла ошибка"));
@@ -94,18 +93,15 @@ module.exports.updateProfile = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         throw new STATUS_BAD_REQUEST(`Ошибка валидации: ${err.message}`);
-      } else {
-        res
-          .status(STATUS_INTERNAL_SERVER_ERROR)
-          .send({ message: "Произошла ошибка" });
       }
-    });
+    })
+    .catch(next);
 };
 
 module.exports.updateAvatar = (req, res, next) => {
@@ -116,16 +112,13 @@ module.exports.updateAvatar = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         throw new STATUS_BAD_REQUEST(`Ошибка валидации: ${err.message}`);
-      } else {
-        res
-          .status(STATUS_INTERNAL_SERVER_ERROR)
-          .send({ message: "Произошла ошибка" });
       }
-    });
+    })
+    .catch(next);
 };

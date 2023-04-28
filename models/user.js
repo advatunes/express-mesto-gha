@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
   },
-  { validateBeforeSave: true }
+  { validateBeforeSave: true },
 );
 
 userSchema.statics.findUserByCredentials = function (email, password) {
