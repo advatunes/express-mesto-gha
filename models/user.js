@@ -5,14 +5,12 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-
       minlength: 2,
       maxlength: 30,
       default: "Жак-Ив Кусто",
     },
     about: {
       type: String,
-
       minlength: 2,
       maxlength: 30,
       default: "Исследователь",
@@ -31,27 +29,28 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      minlength: 8,
       select: false,
     },
   },
-  { validateBeforeSave: true },
+  { validateBeforeSave: true }
 );
 
 userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email }).select("+password").then((user) => {
-    if (!user) {
-      return Promise.reject(new Error("Неправильные почта или пароль"));
-    }
-
-    return bcrypt.compare(password, user.password).then((matched) => {
-      if (!matched) {
+  return this.findOne({ email })
+    .select("+password")
+    .then((user) => {
+      if (!user) {
         return Promise.reject(new Error("Неправильные почта или пароль"));
       }
 
-      return user;
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          return Promise.reject(new Error("Неправильные почта или пароль"));
+        }
+
+        return user;
+      });
     });
-  });
 };
 
 module.exports = mongoose.model("user", userSchema);

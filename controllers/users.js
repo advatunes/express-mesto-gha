@@ -21,6 +21,7 @@ module.exports.createUser = (req, res, next) => {
   }
 
   User.findOne({ email: email })
+    .select("-password")
     .then((user) => {
       if (user) {
         throw new STATUS_DUPLICATE_EMAIL(
@@ -37,6 +38,7 @@ module.exports.createUser = (req, res, next) => {
         })
           .then((user) => res.status(201).send({ user }))
           .catch((err) => {
+            console.log(err);
             if (err instanceof mongoose.Error.ValidationError) {
               next(new STATUS_BAD_REQUEST(`Ошибка валидации: ${err.message}`));
             } else if (err.code === 11000) {

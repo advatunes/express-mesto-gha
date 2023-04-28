@@ -2,7 +2,9 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const User = require("../models/user");
 
-const STATUS_INVALID_CREDENTIALS = require("../utils/errors");
+const {
+  STATUS_INVALID_CREDENTIALS,
+} = require("../utils/errors");
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
@@ -13,6 +15,7 @@ module.exports.login = (req, res, next) => {
       res.send({ token });
     })
     .catch((err) => {
-      throw new STATUS_INVALID_CREDENTIALS("Неверный логин или пароль");
+      console.log(err);
+      throw new STATUS_INVALID_CREDENTIALS("Неверный адрес электронной почты или пароль");
     }).catch(next);
 };
