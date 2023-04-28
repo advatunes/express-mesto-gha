@@ -10,8 +10,8 @@ const {
 
 userRouter.get(
   "/users",
- 
-  getUsers
+
+  getUsers,
 );
 userRouter.get("/users/me", getUserInfo);
 userRouter.get("/users/:userId", getUserById);

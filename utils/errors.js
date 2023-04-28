@@ -5,13 +5,6 @@ class STATUS_NOT_FOUND extends Error {
   }
 }
 
-class STATUS_CREATED extends Error {
-  constructor(message) {
-    super(message);
-    this.statusCode = 201;
-  }
-}
-
 class STATUS_BAD_REQUEST extends Error {
   constructor(message) {
     super(message);
@@ -49,7 +42,6 @@ class STATUS_UNAUTHORIZED_ACTION extends Error {
 
 module.exports = {
   STATUS_NOT_FOUND,
-  STATUS_CREATED,
   STATUS_BAD_REQUEST,
   STATUS_INTERNAL_SERVER_ERROR,
   STATUS_INVALID_CREDENTIALS,

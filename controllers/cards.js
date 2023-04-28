@@ -2,13 +2,9 @@ const mongoose = require("mongoose");
 const Card = require("../models/card");
 const STATUS_NOT_FOUND = require("../utils/errors");
 const STATUS_BAD_REQUEST = require("../utils/errors");
-const STATUS_CREATED = require("../utils/errors");
-const STATUS_INTERNAL_SERVER_ERROR = require("../utils/errors");
-const STATUS_INVALID_CREDENTIALS = require("../utils/errors");
-const STATUS_DUPLICATE_EMAIL = require("../utils/errors");
 const STATUS_UNAUTHORIZED_ACTION = require("../utils/errors");
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link, likes } = req.body;
 
   const owner = req.user._id;
@@ -28,7 +24,7 @@ module.exports.createCard = (req, res) => {
     .catch(next);
 };
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .populate("owner")
     .populate("likes")
@@ -36,7 +32,7 @@ module.exports.getCards = (req, res) => {
     .catch(next);
 };
 
-module.exports.deleteCardUserById = (req, res) => {
+module.exports.deleteCardUserById = (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
     throw new STATUS_BAD_REQUEST("Некорректный ID карточки");
   } else {
@@ -54,7 +50,7 @@ module.exports.deleteCardUserById = (req, res) => {
   }
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
     throw new STATUS_BAD_REQUEST("Некорректный ID карточки");
   }
@@ -72,7 +68,7 @@ module.exports.likeCard = (req, res) => {
     .catch(next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
     throw new STATUS_BAD_REQUEST("Некорректный ID карточки");
   }

@@ -1,6 +1,6 @@
 const createUserRouter = require("express").Router();
-const { createUser } = require("../controllers/users");
 const { celebrate, Joi } = require("celebrate");
+const { createUser } = require("../controllers/users");
 
 createUserRouter.post(
   "/signup",
@@ -13,7 +13,7 @@ createUserRouter.post(
       password: Joi.string().required().min(8),
     }),
   }),
-  createUser
+  createUser,
 );
 
 module.exports = { createUserRouter };
