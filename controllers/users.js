@@ -36,7 +36,12 @@ module.exports.createUser = (req, res, next) => {
           email,
           password: hash,
         })
-          .then((user) => res.status(201).send({ user }))
+        .then((user) => {
+          const userWithoutPassword = user.toObject();
+          delete userWithoutPassword.password;
+          res.status(201).send({ user: userWithoutPassword });
+        })
+
           .catch((err) => {
             console.log(err);
             if (err instanceof mongoose.Error.ValidationError) {
