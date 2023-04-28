@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const { errors } = require('celebrate');
 
 const {
   userRouter, cardRouter, loginRouter, createUserRouter,
@@ -21,15 +22,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(loginRouter);
 app.use(createUserRouter);
 
-// app.use((req, res, next) => {
-//   res.status(404).send({ message: "Запрашиваемый ресурс не найден" });
-//   next()
-// });
+
 
 app.use(auth);
 app.use(userRouter);
 
 app.use(cardRouter);
+
+app.use((req, res, next) => {
+  res.status(404).send({ message: "Запрашиваемый ресурс не найден" });
+  next()
+});
+
+app.use(errors())
 
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500

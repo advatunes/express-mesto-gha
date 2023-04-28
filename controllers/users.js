@@ -4,15 +4,9 @@ const validator = require("validator");
 const mongoose = require("mongoose");
 const User = require("../models/user");
 
-const STATUS_NOT_FOUND = require("../utils/errors");
-const STATUS_BAD_REQUEST = require("../utils/errors");
-const STATUS_CREATED = require("../utils/errors");
-const STATUS_INTERNAL_SERVER_ERROR = require("../utils/errors");
-const STATUS_INVALID_CREDENTIALS = require("../utils/errors");
-const STATUS_DUPLICATE_EMAIL = require("../utils/errors");
-const STATUS_UNAUTHORIZED_ACTION = require("../utils/errors");
+const { STATUS_NOT_FOUND, STATUS_BAD_REQUEST, STATUS_CREATED, STATUS_INTERNAL_SERVER_ERROR, STATUS_INVALID_CREDENTIALS, STATUS_DUPLICATE_EMAIL, STATUS_UNAUTHORIZED_ACTION } = require("../utils/errors");
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -28,13 +22,12 @@ module.exports.createUser = (req, res) => {
       .then((user) => res.status(STATUS_CREATED).send({ user }))
       .catch((err) => {
         if (err instanceof mongoose.Error.ValidationError) {
-          throw new STATUS_BAD_REQUEST(`Ошибка валидации: ${err.message}`);
+          next(new STATUS_BAD_REQUEST(`Ошибка валидации: ${err.message}`));
         } else {
-          res
-            .status(STATUS_INTERNAL_SERVER_ERROR)
-            .send({ message: "Произошла ошибка" });
+          next(new STATUS_INTERNAL_SERVER_ERROR("Произошла ошибка"));
         }
       });
+
   });
 };
 

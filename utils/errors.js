@@ -5,16 +5,12 @@ class STATUS_NOT_FOUND extends Error {
   }
 }
 
-module.exports = STATUS_NOT_FOUND;
-
 class STATUS_CREATED extends Error {
   constructor(message) {
     super(message);
     this.statusCode = 201;
   }
 }
-
-module.exports = STATUS_CREATED;
 
 class STATUS_BAD_REQUEST extends Error {
   constructor(message) {
@@ -23,16 +19,12 @@ class STATUS_BAD_REQUEST extends Error {
   }
 }
 
-module.exports = STATUS_BAD_REQUEST;
-
 class STATUS_INTERNAL_SERVER_ERROR extends Error {
   constructor(message) {
     super(message);
     this.statusCode = 500;
   }
 }
-
-module.exports = STATUS_INTERNAL_SERVER_ERROR;
 
 class STATUS_INVALID_CREDENTIALS extends Error {
   constructor(message) {
@@ -41,16 +33,12 @@ class STATUS_INVALID_CREDENTIALS extends Error {
   }
 }
 
-module.exports = STATUS_INVALID_CREDENTIALS;
-
 class STATUS_DUPLICATE_EMAIL extends Error {
   constructor(message) {
     super(message);
     this.statusCode = 409;
   }
 }
-
-module.exports = STATUS_DUPLICATE_EMAIL;
 
 class STATUS_UNAUTHORIZED_ACTION extends Error {
   constructor(message) {
@@ -59,4 +47,12 @@ class STATUS_UNAUTHORIZED_ACTION extends Error {
   }
 }
 
-module.exports = STATUS_UNAUTHORIZED_ACTION;
+module.exports = {
+  STATUS_NOT_FOUND,
+  STATUS_CREATED,
+  STATUS_BAD_REQUEST,
+  STATUS_INTERNAL_SERVER_ERROR,
+  STATUS_INVALID_CREDENTIALS,
+  STATUS_DUPLICATE_EMAIL,
+  STATUS_UNAUTHORIZED_ACTION,
+};
