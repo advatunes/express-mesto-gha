@@ -5,6 +5,4 @@ class STATUS_BAD_REQUEST extends Error {
   }
 }
 
-module.exports = {
-  STATUS_BAD_REQUEST,
-};
+module.exports = STATUS_BAD_REQUEST;

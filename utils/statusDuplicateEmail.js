@@ -5,6 +5,4 @@ class STATUS_DUPLICATE_EMAIL extends Error {
   }
 }
 
-module.exports = {
-  STATUS_DUPLICATE_EMAIL,
-};
+module.exports = STATUS_DUPLICATE_EMAIL;

@@ -5,6 +5,4 @@ class STATUS_INVALID_CREDENTIALS extends Error {
   }
 }
 
-module.exports = {
-  STATUS_INVALID_CREDENTIALS,
-};
+module.exports = STATUS_INVALID_CREDENTIALS;

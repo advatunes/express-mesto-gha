@@ -5,6 +5,4 @@ class STATUS_UNAUTHORIZED_ACTION extends Error {
   }
 }
 
-module.exports = {
-  STATUS_UNAUTHORIZED_ACTION,
-};
+module.exports = STATUS_UNAUTHORIZED_ACTION;
