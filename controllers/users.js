@@ -6,46 +6,37 @@ const User = require("../models/user");
 const {
   STATUS_NOT_FOUND,
   STATUS_BAD_REQUEST,
-  STATUS_INTERNAL_SERVER_ERROR,
   STATUS_DUPLICATE_EMAIL,
 } = require("../utils/errors");
 
 module.exports.createUser = (req, res, next) => {
-  const {
-    name, about, avatar, email, password,
-  } = req.body;
+  const { name, about, avatar, email, password } = req.body;
 
   if (!validator.isEmail(email)) {
     throw new STATUS_BAD_REQUEST("Некорректный адрес электронной почты");
   }
 
-  bcrypt
-    .hash(password, 10)
-    .then((hash) => {
-      User.create({
-        name,
-        about,
-        avatar,
-        email,
-        password: hash,
-      })
-        .then((user) => {
-          const userWithoutPassword = user.toObject();
-          delete userWithoutPassword.password;
-          res.status(201).send({ user: userWithoutPassword });
-        })
-
-        .catch((err) => {
-          console.log(err);
-          if (err instanceof mongoose.Error.ValidationError) {
-            throw new STATUS_BAD_REQUEST(`Ошибка валидации: ${err.message}`);
-          } else if (err.code === 11000) {
-            throw new STATUS_DUPLICATE_EMAIL("Такой пользователь уже существует");
-          }
-        });
+  bcrypt.hash(password, 10).then((hash) => {
+    User.create({
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
     })
-
-    .catch(next);
+      .then((user) => {
+        const userWithoutPassword = user.toObject();
+        delete userWithoutPassword.password;
+        res.status(201).send({ user: userWithoutPassword });
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.code === 11000) {
+          throw new STATUS_DUPLICATE_EMAIL("Такой пользователь уже существует");
+        }
+      })
+      .catch(next);
+  });
 };
 
 module.exports.getUsers = (req, res, next) => {
@@ -83,7 +74,7 @@ module.exports.updateProfile = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    },
+    }
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
@@ -102,7 +93,7 @@ module.exports.updateAvatar = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    },
+    }
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {

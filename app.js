@@ -3,7 +3,10 @@ const mongoose = require("mongoose");
 const { errors } = require("celebrate");
 
 const {
-  userRouter, cardRouter, loginRouter, createUserRouter,
+  userRouter,
+  cardRouter,
+  loginRouter,
+  createUserRouter,
 } = require("./routes");
 
 const { PORT = 3000 } = process.env;
@@ -35,17 +38,11 @@ app.use((req, res, next) => {
 app.use(errors());
 
 app.use((err, req, res, next) => {
-  // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
 
-  res
-    .status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? "На сервере произошла ошибка"
-        : message,
-    });
+  res.status(statusCode).send({
+    message: statusCode === 500 ? "На сервере произошла ошибка" : message,
+  });
   next(err);
 });
 
