@@ -29,7 +29,6 @@ module.exports.createUser = (req, res, next) => {
         res.status(201).send({ user: userWithoutPassword });
       })
       .catch((err) => {
-        console.log(err);
         if (err.code === 11000) {
           throw new STATUS_DUPLICATE_EMAIL("Такой пользователь уже существует");
         }
