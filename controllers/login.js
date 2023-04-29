@@ -1,9 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
-const {
-  STATUS_INVALID_CREDENTIALS,
-} = require("../utils/errors");
+const STATUS_INVALID_CREDENTIALS = require("../utils/statusInvalidCredentials");
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;

@@ -2,11 +2,9 @@ const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const User = require("../models/user");
 
-const {
-  STATUS_NOT_FOUND,
-  STATUS_BAD_REQUEST,
-  STATUS_DUPLICATE_EMAIL,
-} = require("../utils/errors");
+const STATUS_NOT_FOUND = require("../utils/statusNotFoundError");
+const STATUS_BAD_REQUEST = require("../utils/statusBadRequestError");
+const STATUS_DUPLICATE_EMAIL = require("../utils/statusDuplicateEmail");
 
 module.exports.createUser = (req, res, next) => {
   const {
