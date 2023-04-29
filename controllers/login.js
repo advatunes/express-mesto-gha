@@ -13,8 +13,7 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign({ _id: user._id }, "some-secret-key", { expiresIn: "7d" });
       res.send({ token });
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
       throw new STATUS_INVALID_CREDENTIALS("Неверный адрес электронной почты или пароль");
     }).catch(next);
 };

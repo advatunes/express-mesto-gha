@@ -19,42 +19,32 @@ module.exports.createUser = (req, res, next) => {
     throw new STATUS_BAD_REQUEST("Некорректный адрес электронной почты");
   }
 
-  User.findOne({ email })
-    .select("-password")
-    .then((user) => {
-      if (user) {
-        throw new STATUS_DUPLICATE_EMAIL(
-          "Пользователь с таким email уже существует",
-        );
-      }
-      bcrypt.hash(password, 10).then((hash) => {
-        User.create({
-          name,
-          about,
-          avatar,
-          email,
-          password: hash,
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => {
+      User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      })
+        .then((user) => {
+          const userWithoutPassword = user.toObject();
+          delete userWithoutPassword.password;
+          res.status(201).send({ user: userWithoutPassword });
         })
-          .then(() => {
-            const userWithoutPassword = user.toObject();
-            delete userWithoutPassword.password;
-            res.status(201).send({ user: userWithoutPassword });
-          })
 
-          .catch((err) => {
-            console.log(err);
-            if (err instanceof mongoose.Error.ValidationError) {
-              next(new STATUS_BAD_REQUEST(`Ошибка валидации: ${err.message}`));
-            } else if (err.code === 11000) {
-              throw new STATUS_DUPLICATE_EMAIL(
-                "Такой пользователь уже существует",
-              );
-            } else {
-              next(new STATUS_INTERNAL_SERVER_ERROR("Произошла ошибка"));
-            }
-          });
-      });
+        .catch((err) => {
+          console.log(err);
+          if (err instanceof mongoose.Error.ValidationError) {
+            throw new STATUS_BAD_REQUEST(`Ошибка валидации: ${err.message}`);
+          } else if (err.code === 11000) {
+            throw new STATUS_DUPLICATE_EMAIL("Такой пользователь уже существует");
+          }
+        });
     })
+
     .catch(next);
 };
 

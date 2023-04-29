@@ -34,7 +34,7 @@ app.use((req, res, next) => {
 
 app.use(errors());
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
 
@@ -46,6 +46,7 @@ app.use((err, req, res) => {
         ? "На сервере произошла ошибка"
         : message,
     });
+  next(err);
 });
 
 app.listen(PORT, () => {
