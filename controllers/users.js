@@ -52,11 +52,8 @@ module.exports.getUserInfo = (req, res, next) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
-    throw new STATUS_BAD_REQUEST("Некорректный ID пользователя");
-  }
 
-  return User.findById(req.params.userId)
+   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
         throw new STATUS_NOT_FOUND("Пользователь не найден");
@@ -77,11 +74,7 @@ module.exports.updateProfile = (req, res, next) => {
     }
   )
     .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        throw new STATUS_BAD_REQUEST(`Ошибка валидации: ${err.message}`);
-      }
-    })
+
     .catch(next);
 };
 
@@ -96,10 +89,6 @@ module.exports.updateAvatar = (req, res, next) => {
     }
   )
     .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        throw new STATUS_BAD_REQUEST(`Ошибка валидации: ${err.message}`);
-      }
-    })
+ 
     .catch(next);
 };
