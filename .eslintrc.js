@@ -11,7 +11,7 @@ module.exports = {
   },
   rules: {
     semi: ["error", "always"],
-    "max-classes-per-file": ["error", 10],
+    // "max-classes-per-file": ["error", 10],
     quotes: ["error", "double"],
     "no-underscore-dangle": ["error", { allow: ["_id", "foo_"] }],
   },
