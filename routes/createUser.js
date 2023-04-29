@@ -11,7 +11,7 @@ createUserRouter.post(
       avatar: Joi.string().pattern(/^https?:\/\/(www\.)?\w+\.\w{2,}\/?.*$/i),
       email: Joi.string().required().email(),
       password: Joi.string().required().min(8),
-      
+
     }),
   }),
   createUser,

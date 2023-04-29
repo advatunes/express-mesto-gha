@@ -1,8 +1,6 @@
-const mongoose = require("mongoose");
 const Card = require("../models/card");
 const {
   STATUS_NOT_FOUND,
-  STATUS_BAD_REQUEST,
   STATUS_UNAUTHORIZED_ACTION,
 } = require("../utils/errors");
 
@@ -49,7 +47,7 @@ module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
     .then((card) => {
       if (!card) {
@@ -64,7 +62,7 @@ module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
     .then((card) => {
       if (!card) {

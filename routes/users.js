@@ -9,7 +9,7 @@ const {
   updateAvatar,
 } = require("../controllers/users");
 
-userRouter.get("/users",getUsers);
+userRouter.get("/users", getUsers);
 userRouter.get("/users/me", getUserInfo);
 
 userRouter.get(
@@ -19,7 +19,7 @@ userRouter.get(
       userId: Joi.string().hex().length(24),
     }),
   }),
-  getUserById
+  getUserById,
 );
 
 userRouter.patch(
@@ -43,7 +43,4 @@ userRouter.patch(
   updateAvatar,
 );
 
-
 module.exports = { userRouter };
-
-

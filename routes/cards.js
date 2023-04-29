@@ -27,7 +27,7 @@ cardRouter.post(
         .pattern(/^https?:\/\/(www\.)?\w+\.\w{2,}\/?.*$/i),
     }),
   }),
-  createCard
+  createCard,
 );
 
 cardRouter.put(
@@ -37,7 +37,7 @@ cardRouter.put(
       cardId: Joi.string().hex().length(24),
     }),
   }),
-  likeCard
+  likeCard,
 );
 
 cardRouter.delete(
@@ -47,7 +47,7 @@ cardRouter.delete(
       cardId: Joi.string().hex().length(24),
     }),
   }),
-  dislikeCard
+  dislikeCard,
 );
 
 cardRouter.delete(
@@ -57,5 +57,5 @@ cardRouter.delete(
       cardId: Joi.string().hex().length(24),
     }),
   }),
-  deleteCardUserById
+  deleteCardUserById,
 );

@@ -1,6 +1,5 @@
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
-const mongoose = require("mongoose");
 const User = require("../models/user");
 
 const {
@@ -10,7 +9,9 @@ const {
 } = require("../utils/errors");
 
 module.exports.createUser = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
   if (!validator.isEmail(email)) {
     throw new STATUS_BAD_REQUEST("Некорректный адрес электронной почты");
@@ -52,8 +53,7 @@ module.exports.getUserInfo = (req, res, next) => {
 };
 
 module.exports.getUserById = (req, res, next) => {
-
-   User.findById(req.params.userId)
+  User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
         throw new STATUS_NOT_FOUND("Пользователь не найден");
@@ -71,7 +71,7 @@ module.exports.updateProfile = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => res.send({ data: user }))
 
@@ -86,9 +86,9 @@ module.exports.updateAvatar = (req, res, next) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((user) => res.send({ data: user }))
- 
+
     .catch(next);
 };
