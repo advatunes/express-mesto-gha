@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const { errors } = require("celebrate");
+const config = require("./config");
+const { STATUS_NOT_FOUND } = require("./utils/errors");
 
 const {
   userRouter,
@@ -9,12 +11,11 @@ const {
   createUserRouter,
 } = require("./routes");
 
-const { PORT = 3000 } = process.env;
 const app = express();
 
 const auth = require("./middlewares/auth");
 
-mongoose.connect("mongodb://localhost:27017/mestodb", {
+mongoose.connect(config.mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -25,19 +26,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(loginRouter);
 app.use(createUserRouter);
 
-app.use(auth);
-app.use(userRouter);
-
-app.use(cardRouter);
+app.use("/users", auth, userRouter);
+app.use("/cards", auth, cardRouter);
 
 app.use((req, res, next) => {
-  res.status(404).send({ message: "Запрашиваемый ресурс не найден" });
-  next();
+  next(new STATUS_NOT_FOUND("Запрашиваемый ресурс не найден"));
 });
 
 app.use(errors());
 
 app.use((err, req, res, next) => {
+  if (err && err.code === 11000) {
+    res.status(409).send({ message: "Такой пользователь уже существует" });
+    return;
+  }
   const { statusCode = 500, message } = err;
 
   res.status(statusCode).send({
@@ -46,6 +48,6 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+app.listen(config.port, () => {
+  console.log(`App listening on port ${config.port}`);
 });

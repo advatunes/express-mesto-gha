@@ -1,20 +1,12 @@
 const bcrypt = require("bcryptjs");
-const validator = require("validator");
 const User = require("../models/user");
 
-const STATUS_NOT_FOUND = require("../utils/statusNotFoundError");
-const STATUS_BAD_REQUEST = require("../utils/statusBadRequestError");
-const STATUS_DUPLICATE_EMAIL = require("../utils/statusDuplicateEmail");
+const { STATUS_NOT_FOUND } = require("../utils/errors");
 
 module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-
-  if (!validator.isEmail(email)) {
-    throw new STATUS_BAD_REQUEST("Некорректный адрес электронной почты");
-  }
-
   bcrypt.hash(password, 10).then((hash) => {
     User.create({
       name,
@@ -28,11 +20,7 @@ module.exports.createUser = (req, res, next) => {
         delete userWithoutPassword.password;
         res.status(201).send({ user: userWithoutPassword });
       })
-      .catch((err) => {
-        if (err.code === 11000) {
-          throw new STATUS_DUPLICATE_EMAIL("Такой пользователь уже существует");
-        }
-      })
+
       .catch(next);
   });
 };

@@ -1,7 +1,9 @@
 const Card = require("../models/card");
 
-const STATUS_NOT_FOUND = require("../utils/statusNotFoundError");
-const STATUS_UNAUTHORIZED_ACTION = require("../utils/statusUnauthorizedAction");
+const {
+  STATUS_NOT_FOUND,
+  STATUS_UNAUTHORIZED_ACTION,
+} = require("../utils/errors");
 
 module.exports.createCard = (req, res, next) => {
   const { name, link, likes } = req.body;
@@ -28,7 +30,7 @@ module.exports.getCards = (req, res, next) => {
 };
 
 module.exports.deleteCardUserById = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         throw new STATUS_NOT_FOUND("Карточка не найдена");
@@ -36,8 +38,11 @@ module.exports.deleteCardUserById = (req, res, next) => {
       if (card.owner.toString() !== req.user._id) {
         throw new STATUS_UNAUTHORIZED_ACTION("Нельзя удалить чужую карточку");
       } else {
-        res.send({ message: "Карточка удалена" });
+        return Card.findByIdAndRemove(req.params.cardId);
       }
+    })
+    .then(() => {
+      res.send({ message: "Карточка удалена" });
     })
     .catch(next);
 };

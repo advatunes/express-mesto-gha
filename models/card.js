@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const urlRegex = require("../utils/constants");
 
 const cardSchema = new mongoose.Schema(
   {
@@ -11,7 +12,7 @@ const cardSchema = new mongoose.Schema(
     link: {
       type: String,
       required: true,
-      match: /^https?:\/\/(www\.)?\w+\.\w{2,}\/?.*$/i,
+      match: urlRegex,
     },
     owner: {
       type: mongoose.Types.ObjectId,
