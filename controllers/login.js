@@ -14,10 +14,5 @@ module.exports.login = (req, res, next) => {
       });
       res.send({ token });
     })
-    .catch(() => {
-      throw new STATUS_INVALID_CREDENTIALS(
-        "Неверный адрес электронной почты или пароль",
-      );
-    })
     .catch(next);
 };
